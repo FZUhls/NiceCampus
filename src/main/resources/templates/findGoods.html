@@ -122,7 +122,7 @@
 <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/static/js/bootsnav.js"></script>
 <script src="/static/js/jqPaginator.js"></script>
-<script>
+<script th:inline="javascript">
     $(function () {
 
         //分页
@@ -131,7 +131,6 @@
                 totalPages: total,
                 visiblePages: 5,
                 currentPage: current,
-
                 first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
                 prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
                 next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
@@ -145,23 +144,19 @@
             '<a href="user_info.jsp">个人中心</a></li>' +
             '<li><form action="${pageContext.request.contextPath}/logOut" method="get"><a href="javascript:;">退出</a></form></li> </ul></div>');
 
-        // <c:if test="${sessionScope.user!=null}">
-        //     $('#login a').text("${sessionScope.user.username}");
-        //     $('.icon:eq(1) img').prop('src', "${sessionScope.user.iconUrl}");
-        //     $('#login a').prop('href', 'javascript:;');
-        //     $('.container nav').append(tipBox);
-        // </c:if>
+        const user = /*[[${user}]]*/ null;
+        if(user != null){
+            $('#login a').text(user.username);
+            $('.icon:eq(1) img').prop(user.iconUrl);
+            $('#login a').prop('href', 'javascript:;');
+            $('.container nav').append(tipBox);
+        }
 
         //点击购物车
         $('.container nav .shoppingCart a').click(function (){
-            // <c:choose>
-            //     <c:when test="${sessionScope.user!=null}">
-            //         window.location='myCart.jsp';
-            //     </c:when>
-            //     <c:otherwise>
-            //         window.location='login.jsp';
-            //     </c:otherwise>
-            // </c:choose>
+            if(user!=null){
+                window.location='/myCart';
+            }
             console.log("点击购物车")
         })
 
@@ -199,7 +194,7 @@
         let getRecords = function () {
             $('.main').empty();
             $.ajax({
-                url: '${pageContext.request.contextPath}/getRecords',
+                url: '/goods/getRecords',
                 method: 'post',
                 data: {currentPage: currentPage},
                 dataType: 'text',

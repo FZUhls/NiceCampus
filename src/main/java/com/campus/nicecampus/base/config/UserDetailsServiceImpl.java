@@ -24,10 +24,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名不存在");
         }
         User user = userList.get(0);
-        SimpleGrantedAuthority role = new SimpleGrantedAuthority("common");
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                user.getUsername(),user.getPassword(),List.of(role));
-        return userDetails;
+        return user;
     }
-
 }

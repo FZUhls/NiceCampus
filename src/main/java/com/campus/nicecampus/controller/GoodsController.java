@@ -1,33 +1,48 @@
 package com.campus.nicecampus.controller;
 
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.campus.nicecampus.base.model.GoodsDetail;
 import com.campus.nicecampus.req.AddGoodsReq;
 import com.campus.nicecampus.res.BaseResponse;
 import com.campus.nicecampus.service.GoodService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
 @Controller
-public class GoodsController {
+public class GoodsController extends BaseController{
 
     @Autowired
     GoodService goodService;
     @GetMapping("/goodList")
-    public String goodList(){
+    public String goodList(Model model){
+        model.addAttribute("user",getUser());
         return "goodList";
     }
     @GetMapping("/findGoods")
-    public String findGoods(){
+    public String findGoods(Model model){
+        model.addAttribute("user",getUser());
         return "findGoods";
+    }
+    @GetMapping("/good/seekGoods")
+    public String seekGoods(Model model){
+        model.addAttribute("user",getUser());
+        return "seekGoods";
     }
     @GetMapping("/releaseGoods")
     public String releaseGoods(){
@@ -48,5 +63,13 @@ public class GoodsController {
             baseResponse.setCode(0);
             return baseResponse;
         }
+    }
+    @ResponseBody
+    @PostMapping("/goods/getTypesGoods")
+    public BaseResponse<Page<GoodsDetail>> goods(int currentPage, String type){
+        Page<GoodsDetail> goodsDetailPage = goodService.findPages(currentPage, type);
+        BaseResponse<Page<GoodsDetail>> res = BaseResponse.succ();
+        res.setData(goodsDetailPage);
+        return res;
     }
 }

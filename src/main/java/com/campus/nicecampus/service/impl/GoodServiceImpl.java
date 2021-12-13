@@ -1,6 +1,8 @@
 package com.campus.nicecampus.service.impl;
 
-import com.aliyun.oss.model.PutObjectResult;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.campus.nicecampus.base.mapper.GoodsDetailMapper;
 import com.campus.nicecampus.base.model.GoodsDetail;
 import com.campus.nicecampus.req.AddGoodsReq;
@@ -13,10 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 @Slf4j
 @Service
-public class GoodServiceImpl implements GoodService {
+public class GoodServiceImpl extends BaseService implements GoodService {
     @Autowired
     GoodsDetailMapper goodsDetailMapper;
     @Autowired
@@ -32,7 +36,7 @@ public class GoodServiceImpl implements GoodService {
         goodsDetail.setLabels(req.getLabels());
         goodsDetail.setPrice(Double.parseDouble(req.getPrice()));
         goodsDetail.setType(req.getType());
-        goodsDetail.setUserId(1L);
+        goodsDetail.setUserId(getUser().getId());
         ossService.upLoad(fileName, file.getInputStream(), file.getContentType());
 
         String url = BASE_URL+fileName;
@@ -44,5 +48,17 @@ public class GoodServiceImpl implements GoodService {
     @Override
     public GoodsDetail getGoods(long id) {
         return null;
+    }
+
+    @Override
+    public Page<GoodsDetail> findPages(long pageNo, String type) {
+        Page<GoodsDetail> page = new Page<>();
+        page.setCurrent(pageNo);
+        page.setSize(10);
+        QueryWrapper<GoodsDetail> queryWrapper = new QueryWrapper<>();
+        if(!Objects.equals(type,"all")){
+            queryWrapper.eq("type",type);
+        }
+        return goodsDetailMapper.selectPage(page,queryWrapper);
     }
 }

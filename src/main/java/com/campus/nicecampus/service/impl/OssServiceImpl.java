@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 @Service
 @Slf4j
-public class OssServiceImpl implements OssService {
+public class OssServiceImpl extends BaseService implements OssService {
     @Autowired
     private OSS ossClient;
     @Value("${aliyun.oss.bucketName}")

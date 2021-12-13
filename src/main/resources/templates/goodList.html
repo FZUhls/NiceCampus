@@ -46,7 +46,7 @@
                                 <li style="border-bottom: 1px solid gray;">
                                     <div style="height: 40px;display: flex;align-items: center;">
                                         <div class="release"><img src="/static/image/发布商品.png"></div>
-                                        <div><a href="release_goods.jsp">发布商品</a></div>
+                                        <div><a href="/releaseGoods">发布商品</a></div>
                                     </div>
                                 </li>
                                 <li>
@@ -496,51 +496,30 @@
 <script src="/static/js/pinterest_grid.js"></script>
 <script src="/static/js/jqPaginator.js"></script>
 <script src="/static/js/goodList.js"></script>
-<script>
+<script th:inline="javascript">
     $(function () {
         //瀑布流
         $("#gallery-wrapper").pinterest_grid();
-        //分页
-        let paging = function (total, current) {
-            $('#pagination2').jqPaginator({
-                totalPages: total,
-                visiblePages: 5,
-                currentPage: current,
-
-                first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
-                prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
-                next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
-                last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
-                page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
-            });
-        }
         //当前商品种类
         let goodsType = "all";
-        //当前页码
-        let currentPage = 1;
         //登录后可查看的个人中心
         let tipBox = $('<div class="tipBox"><ul>' +
             '<li style="border-bottom: 1px solid rgb(128,128,128);">' +
-            '<a href="user_info.jsp">个人中心</a></li>' +
-            '<li><form action="${pageContext.request.contextPath}/logOut" method="get"><a href="javascript:;">退出</a></form></li> </ul></div>');
-
-        // <c:if test="${sessionScope.user!=null}">
-        //     $('#login a').text("${sessionScope.user.username}");
-        //     $('.icon:eq(1) img').prop('src', "${sessionScope.user.iconUrl}");
-        //     $('#login a').prop('href', 'javascript:;');
-        //     $('.container nav').append(tipBox);
-        // </c:if>
+            '<a href="/user_info">个人中心</a></li>' +
+            '<li><form action="/logout" method="get"><a href="javascript:;">退出</a></form></li> </ul></div>');
+        const user = /*[[${user}]]*/ null;
+        if(user != null){
+            $('#login a').text(user.username);
+            $('.icon:eq(1) img').prop(user.iconUrl);
+            $('#login a').prop('href', 'javascript:;');
+            $('.container nav').append(tipBox);
+        }
 
         //点击购物车
         $('.container nav .shoppingCart a').click(function (){
-            // <c:choose>
-            //     <c:when test="${sessionScope.user!=null}">
-            //         window.location='myCart.jsp';
-            //     </c:when>
-            //     <c:otherwise>
-            //         window.location='login.jsp';
-            //     </c:otherwise>
-            // </c:choose>
+            if(user!=null){
+                window.location='/myCart';
+            }
             console.log("点击购物车")
         })
 
@@ -573,21 +552,28 @@
             }
         }, 10);
 
+        let paging = function (total, current) {
+            $('#pagination2').jqPaginator({
+                totalPages: total,
+                visiblePages: 5,
+                currentPage: current,
+
+                first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+                prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
+                next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
+                last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
+                page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+            });
+        }
 
         //将取到的商品对象显示在网页上
-        let show_goods = function (data, current) {
+        let show_goods = function (data,currentPage) {
             $('#gallery-wrapper').empty();
-            let strArr = data.split("#");
-            //取出总页数
-            let pages = parseInt(strArr.pop());
-            let goodsArr = [];//存放所有商品的JSON对象
-            strArr.forEach((item) => {
-                goodsArr.push(JSON.parse(item));
-            })
-            paging(pages, current);
+            let goodsArr = data.records;
+            paging(data.total,currentPage)
             goodsArr.forEach((item) => {
-                let goodsCard = $('<article class="white-panel">' +
-                    '<img class="thumb">' +
+                let goodsCard = $('<article class="white-panel" style="cursor: pointer">' +
+                    '<img class="thumb" style="width: 500px; height: 500px">' +
                     '<h1><a href="javascript:;"></a></h1>' +
                     '<p></p>' +
                     '<form action="${pageContext.request.contextPath}/detail" method="get"><input type="text" name="id" style="display: none;">' +
@@ -599,15 +585,16 @@
                 $('#gallery-wrapper').append(goodsCard);
             })
         }
+        let currentPage = 1;
         //向后台请求商品数据
         let request_goods = function () {
             $.ajax({
-                url: '${pageContext.request.contextPath}/getTypesGoods',
+                url: 'goods/getTypesGoods',
                 method: 'post',
                 data: {currentPage: currentPage, type: goodsType},
-                dataType: 'text',
-                success: function (data) {
-                    show_goods(data, currentPage);
+                dataType: 'json',
+                success: function (res) {
+                    show_goods(res.data,currentPage);
                 }
             })
         }

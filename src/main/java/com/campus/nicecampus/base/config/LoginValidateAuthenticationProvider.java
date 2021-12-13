@@ -1,5 +1,6 @@
 package com.campus.nicecampus.base.config;
 
+import com.campus.nicecampus.base.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
@@ -41,6 +42,8 @@ public class LoginValidateAuthenticationProvider implements AuthenticationProvid
             throw new BadCredentialsException("输入密码错误!");
         }
         log.info(username+": 登录成功");
+        User user = (User) userDetails;
+        user.setPassword("");
         return new UsernamePasswordAuthenticationToken(userDetails, rawPassword, userDetails.getAuthorities());
     }
 
