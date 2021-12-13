@@ -34,7 +34,7 @@
                     <ul class="nav navbar-nav" data-in="fadeInDown" data-out="fadeOutUp">
                         <li><a href="/">主页</a></li>
                         <li style="background: #ebebeb;"><a href="#" style="color: orange;">二手商品</a></li>
-                        <li><a href="find_goods.jsp">求购</a></li>
+                        <li><a href="/findGoods">求购</a></li>
                         <li><a href="javascript:;">联系我们</a></li>
                         <div class="shoppingCart">
                             <a>购物车</a>
@@ -487,27 +487,15 @@
 <div class="pageBar">
     <ul class="pagination" id="pagination2"></ul>
 </div>
-<div class="common-footer">
-    <div class="footerMain">
-        <div>
-            <p style="padding-top: 40px;"><strong>联系我们</strong> / contact us</p>
-            <p style="padding-top: 20px;">Q Q：163256485</p>
-            <p style="padding-top: 15px;">TEL: 13254881254</p>
-            <p style="padding-top: 15px;">地址：广州番禺华南理工大学城校区</p>
-        </div>
-    </div>
-    <div class="copyright">
-        <p>版权所有 © All Rights Reserved，xxxxxxxxxxxxx</p>
-    </div>
-</div>
+<div th:include="footer.html"></div>
 
-<script src="js/jQuery.min.js"></script>
+<script src="/static/js/jQuery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="js/bootsnav.js"></script>
-<script src="js/main.js"></script>
-<script src="js/pinterest_grid.js"></script>
-<script src="js/jqPaginator.js"></script>
-<script src="js/goodList.js"></script>
+<script type="text/javascript" src="/static/js/bootsnav.js"></script>
+<script src="/static/js/main.js"></script>
+<script src="/static/js/pinterest_grid.js"></script>
+<script src="/static/js/jqPaginator.js"></script>
+<script src="/static/js/goodList.js"></script>
 <script>
     $(function () {
         //瀑布流
@@ -536,23 +524,24 @@
             '<a href="user_info.jsp">个人中心</a></li>' +
             '<li><form action="${pageContext.request.contextPath}/logOut" method="get"><a href="javascript:;">退出</a></form></li> </ul></div>');
 
-        <c:if test="${sessionScope.user!=null}">
-            $('#login a').text("${sessionScope.user.username}");
-            $('.icon:eq(1) img').prop('src', "${sessionScope.user.iconUrl}");
-            $('#login a').prop('href', 'javascript:;');
-            $('.container nav').append(tipBox);
-        </c:if>
+        // <c:if test="${sessionScope.user!=null}">
+        //     $('#login a').text("${sessionScope.user.username}");
+        //     $('.icon:eq(1) img').prop('src', "${sessionScope.user.iconUrl}");
+        //     $('#login a').prop('href', 'javascript:;');
+        //     $('.container nav').append(tipBox);
+        // </c:if>
 
         //点击购物车
         $('.container nav .shoppingCart a').click(function (){
-            <c:choose>
-                <c:when test="${sessionScope.user!=null}">
-                    window.location='myCart.jsp';
-                </c:when>
-                <c:otherwise>
-                    window.location='login.jsp';
-                </c:otherwise>
-            </c:choose>
+            // <c:choose>
+            //     <c:when test="${sessionScope.user!=null}">
+            //         window.location='myCart.jsp';
+            //     </c:when>
+            //     <c:otherwise>
+            //         window.location='login.jsp';
+            //     </c:otherwise>
+            // </c:choose>
+            console.log("点击购物车")
         })
 
         //退出登录

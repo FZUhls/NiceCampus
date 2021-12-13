@@ -46,7 +46,7 @@
           <h2>校园求购</h2>
           <p>完好无损，不舍丢弃</p>
           <p>或许有人正需要它</p>
-          <button><a href="find_goods.jsp">校园求购</a></button>
+          <button><a href="/findGoods">校园求购</a></button>
         </div>
       </div>
       <div class="card" id="card3">
@@ -55,7 +55,7 @@
           <h2>发布商品</h2>
           <p>带不走的东西，丢不掉的记忆</p>
           <p>让小橘子，帮它找到新的主人</p>
-          <button><a href="release_goods.jsp">发布商品</a></button>
+          <button><a href="/releaseGoods">发布商品</a></button>
         </div>
       </div>
     </div>
@@ -94,19 +94,7 @@
     </div>
     <div style="clear:both"></div>
   </div>
-  <div class="common-footer">
-    <div class="footerMain">
-      <div>
-        <p style="padding-top: 40px;"><strong>联系我们</strong> / contact us</p>
-        <p style="padding-top: 20px;">Q Q：xxxxxx</p>
-        <p style="padding-top: 15px;">TEL: xxxxxxxxxxx</p>
-        <p style="padding-top: 15px;">地址：XXXXXXXXX</p>
-      </div>
-    </div>
-    <div class="copyright">
-      <p>版权所有 © All Rights Reserved，xxxxxxxxxx</p>
-    </div>
-  </div>
+  <div th:include="footer.html"></div>
 </div>
 <script>
   $(function () {
