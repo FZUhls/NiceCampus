@@ -96,20 +96,20 @@
   </div>
   <div th:include="footer.html"></div>
 </div>
-<script>
+<script th:inline="javascript">
   $(function () {
     let tipBox = $('<div class="tipBox"><ul>' +
             '<li style="border-bottom: 1px solid rgb(128,128,128);">' +
-            '<a href="user_info.jsp">个人中心</a></li>' +
+            '<a href="/user/userInfo">个人中心</a></li>' +
             '<li><form action="/outToIndex" method="get"><a href="javascript:;">退出</a></form></li> </ul></div>');
 
-    // <c:if test="${sessionScope.user!=null}">
-    //   $('#login a').text("${sessionScope.user.username}");
-    //   $('#login img').prop('src',"${sessionScope.user.iconUrl}");
-    //   $('#login a').prop('href', 'javascript:;');
-    //   $('#login').append(tipBox);
-    // </c:if>
-
+    const user = /*[[${user}]]*/ null;
+    if(user != null){
+      $('#login a').text(user.username);
+      $('#login img').prop('src',user.iconUrl);
+      $('#login a').prop('href', 'javascript:;');
+      $('#login').append(tipBox);
+    }
     //退出登录
     $('#logoutBtn').click(function (){
       if(confirm("确认退出？")){
