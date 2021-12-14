@@ -3,9 +3,12 @@ package com.campus.nicecampus.controller;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.campus.nicecampus.base.model.GoodsDetail;
+import com.campus.nicecampus.base.model.WantRecord;
 import com.campus.nicecampus.req.AddGoodsReq;
+import com.campus.nicecampus.req.WantRecordReq;
 import com.campus.nicecampus.res.BaseResponse;
 import com.campus.nicecampus.service.GoodService;
+import com.campus.nicecampus.service.WantRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +32,8 @@ public class GoodsController extends BaseController{
 
     @Autowired
     GoodService goodService;
+    @Autowired
+    WantRecordService wantRecordService;
     @GetMapping("/goodList")
     public String goodList(Model model){
         model.addAttribute("user",getUser());
@@ -44,7 +49,7 @@ public class GoodsController extends BaseController{
         model.addAttribute("user",getUser());
         return "seekGoods";
     }
-    @GetMapping("/releaseGoods")
+    @GetMapping("/good/releaseGoods")
     public String releaseGoods(){
         return "releaseGoods";
     }
@@ -70,6 +75,19 @@ public class GoodsController extends BaseController{
         Page<GoodsDetail> goodsDetailPage = goodService.findPages(currentPage, type);
         BaseResponse<Page<GoodsDetail>> res = BaseResponse.succ();
         res.setData(goodsDetailPage);
+        return res;
+    }
+    @PostMapping("/goods/addWantRecord")
+    public String addWantRecord(WantRecordReq wantRecordReq){
+        wantRecordService.add(wantRecordReq);
+        return "redirect:/findGoods";
+    }
+    @ResponseBody
+    @PostMapping("/goods/getRecords")
+    public BaseResponse<Page<WantRecord>> getRecords(int currentPage){
+        Page<WantRecord> pages = wantRecordService.getPages(currentPage);
+        BaseResponse<Page<WantRecord>> res = BaseResponse.succ();
+        res.setData(pages);
         return res;
     }
 }

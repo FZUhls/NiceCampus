@@ -47,13 +47,13 @@
                                 <li style="border-bottom: 1px solid gray;">
                                     <div style="height: 40px;display: flex;align-items: center;">
                                         <div class="release"><img src="/static/image/发布商品.png"></div>
-                                        <div><a href="/releaseGoods">发布商品</a></div>
+                                        <div><a href="/good/releaseGoods">发布商品</a></div>
                                     </div>
                                 </li>
                                 <li>
                                     <div style="height: 40px;display: flex;align-items: center;">
                                         <div class="release"><img src="/static/image/发布求购.png"></div>
-                                        <div><a href="seek_goods.jsp">发布求购</a></div>
+                                        <div><a href="/good/seekGoods">发布求购</a></div>
                                     </div>
                                 </li>
                             </ul>
@@ -197,16 +197,16 @@
                 url: '/goods/getRecords',
                 method: 'post',
                 data: {currentPage: currentPage},
-                dataType: 'text',
-                success: function (data) {
-                    let records = data.split("#");
-                    let totalPage = parseInt(records.pop());
-                    paging(totalPage,currentPage);
+                dataType: 'json',
+                success: function (res) {
+                    data = res.data;
+                    paging(data.total,currentPage);
                     //渲染求购记录
+                    records = data.records;
                     for (let i = 0; i < records.length; i += 2) {
-                        let record1 = JSON.parse(records[i]);
+                        let record1 = records[i];
                         if (i + 1 < records.length) {
-                            let record2 = JSON.parse(records[i + 1]);
+                            let record2 = records[i + 1];
                             let seekInfo = $('<div class="seekInfo">' +
                                 '<div class="info1">' +
                                 '<div class="userInfo">' +
@@ -221,33 +221,33 @@
                                 '<div class="price"><p style="float: left;">可接受价格：</p><p class="want_price"></p></div>' +
                                 '<div class="price"><p style="float: left;">微信ID：</p><p class="weChat_id"></p></div></div></div>');
                             $.ajax({
-                                url: '${pageContext.request.contextPath}/getOneUser',
+                                url: '/user/getOneUser',
                                 method: 'post',
                                 data: {userId: record1.userId},
-                                dataType: 'text',
-                                success:function (data){
-                                    let user = JSON.parse(data);
+                                dataType: 'json',
+                                success:function (res){
+                                    let user = res.data;
                                     seekInfo.find('.info1 img').prop('src',user.iconUrl);
                                     seekInfo.find('.info1 .username').text(user.username);
                                     seekInfo.find('.info1 .goods_name p').text(record1.title);
                                     seekInfo.find('.info1 .goods_desc p').text(record1.goodsDesc);
                                     seekInfo.find('.info1 .want_price').text(record1.wantPrice);
-                                    seekInfo.find('.info1 .weChat_id').text(user.weChatId);
+                                    seekInfo.find('.info1 .weChat_id').text(user.wechatId);
                                 }
                             })
                             $.ajax({
-                                url: '${pageContext.request.contextPath}/getOneUser',
+                                url: '/user/getOneUser',
                                 method: 'post',
                                 data: {userId: record2.userId},
-                                dataType: 'text',
-                                success:function (data){
-                                    let user = JSON.parse(data);
+                                dataType: 'json',
+                                success:function (res){
+                                    let user = res.data;
                                     seekInfo.find('.info2 img').prop('src',user.iconUrl);
                                     seekInfo.find('.info2 .username').text(user.username);
                                     seekInfo.find('.info2 .goods_name p').text(record2.title);
                                     seekInfo.find('.info2 .goods_desc p').text(record2.goodsDesc);
                                     seekInfo.find('.info2 .want_price').text(record2.wantPrice);
-                                    seekInfo.find('.info2 .weChat_id').text(user.weChatId);
+                                    seekInfo.find('.info2 .weChat_id').text(user.wechatId);
                                 }
                             })
                             $('.main').append(seekInfo);
@@ -261,18 +261,18 @@
                                 '<div class="price"><p style="float: left;">可接受价格：</p><p class="want_price"></p></div>' +
                                 '<div class="price"><p style="float: left;">微信ID：</p><p class="weChat_id"></p></div></div></div>');
                             $.ajax({
-                                url: '${pageContext.request.contextPath}/getOneUser',
+                                url: '/user/getOneUser',
                                 method: 'post',
                                 data: {userId: record1.userId},
-                                dataType: 'text',
-                                success:function (data){
-                                    let user = JSON.parse(data);
+                                dataType: 'json',
+                                success:function (res){
+                                    let user = res.data;
                                     seekInfo.find('.info1 img').prop('src',user.iconUrl);
                                     seekInfo.find('.info1 .username').text(user.username);
                                     seekInfo.find('.info1 .goods_name p').text(record1.title);
                                     seekInfo.find('.info1 .goods_desc p').text(record1.goodsDesc);
                                     seekInfo.find('.info1 .want_price').text(record1.wantPrice);
-                                    seekInfo.find('.info1 .weChat_id').text(user.weChatId);
+                                    seekInfo.find('.info1 .weChat_id').text(user.wechatId);
                                 }
                             })
                             $('.main').append(seekInfo);

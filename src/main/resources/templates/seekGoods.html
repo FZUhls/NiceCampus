@@ -5,10 +5,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>发布求购-橘子校园</title>
-  <link rel="shortcut icon" href="image/橘子.png" type="image/x-icon">
-  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/release.css">
-  <link rel="stylesheet" href="css/footer.css">
+  <link rel="shortcut icon" href="/static/image/橘子.png" type="image/x-icon">
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/css/release.css">
+  <link rel="stylesheet" href="/static/css/footer.css">
   <style>
     * {
       margin: 0;
@@ -34,8 +34,7 @@
   <div style="text-align: center;">
     <p>发布求购</p>
   </div>
-  <form action="/goods/addWantRecord">
-    <input name="userId" th:value="${user.id}" style="display: none;">
+  <form action="/goods/addWantRecord" method="post">
     <div class="form-group">
       <label for="good_name">标题</label>
       <input type="email" class="form-control" id="good_name" aria-describedby="emailHelp"
@@ -62,7 +61,7 @@
   </form>
 </div>
 <div th:include="footer.html"></div>
-<script src="js/jQuery.min.js"></script>
+<script src="/static/js/jQuery.min.js"></script>
 <script>
   $(function () {
     let show_alert = function () {

@@ -1,0 +1,22 @@
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  port: 8080
+spring:
+  datasource:
+    username: pp
+    password: 12345
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://116.62.203.154:3306/campus?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+aliyun:
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com # oss对外服务的访问域名
+    accessKeyId: LTAI5tPjHuBGM58KU9fJWPhi # 访问身份验证中用到用户标识
+    accessKeySecret: hqXyENIgd7iM0AoiDMm7kkShzhxIT8 # 用户用于加密签名字符串和oss用来验证签名字符串的密钥
+    bucketName: nicecampus # oss的存储空间
+    baseUrl: https://nicecampus.oss-cn-hangzhou.aliyuncs.com/
