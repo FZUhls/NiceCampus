@@ -38,7 +38,7 @@
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-menu">
                     <div class="icon">
-                        <img src="image/橘子.png">
+                        <img src="/static/image/橘子.png">
                         <div>橘子校园</div>
                     </div>
                     <ul class="nav navbar-nav" data-in="fadeInDown" data-out="fadeOutUp">
@@ -61,7 +61,7 @@
                                 </li>
                                 <li>
                                     <div style="height: 40px;display: flex;align-items: center;">
-                                        <div class="release"><img src="image/发布求购.png"></div>
+                                        <div class="release"><img src="/static/image/发布求购.png"></div>
                                         <div><a href="/good/seekGoods">发布求购</a></div>
                                     </div>
                                 </li>
@@ -69,7 +69,7 @@
                         </li>
                     </ul>
                     <div class="icon" style="margin:10px 0 0 15px;overflow: hidden;width: 200px;">
-                        <img src="/static/image/未登录.png">
+                        <img th:src="${user.iconUrl}" src="/static/image/未登录.png">
                         <div id="login" style="text-align: left;"><a href="javascript:;" style="margin-left: 10px;" th:text="${user.username}"></a>
                         </div>
                     </div>
@@ -133,12 +133,11 @@
 <script type="text/javascript" src="/static/js/bootsnav.js"></script>
 <script>
     $(function () {
-        $('.icon:eq(1) img').prop('src', "${sessionScope.user.iconUrl}");
 
         let tipBox = $('<div class="tipBox">' +
             '<ul>' +
             '<li style="border-bottom: 1px solid rgb(128,128,128);">' +
-            '<a href="user_info.jsp">个人中心</a></li>' +
+            '<a href="/user/userInfo">个人中心</a></li>' +
             '<li><form action="/logout" method="get"><a href="javascript:;">退出</a></form></li> </ul></div>');
         $('.container nav').append(tipBox);
 
@@ -232,8 +231,13 @@
                 url: '/user/updateUserInfo',
                 method: 'post',
                 data: formData,
-                processData: false,
-                contentType: false
+                success:function (res) {
+                    if(res.code == 1){
+                        show_alert(res.msg);
+                    }else {
+                        show_alert(res.msg);
+                    }
+                }
             })
         })
 

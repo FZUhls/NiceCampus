@@ -22,6 +22,7 @@ public class User implements UserDetails {
     private String wechatId;
     private String iconUrl;
     private String signature;
+    private Long iconHash;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

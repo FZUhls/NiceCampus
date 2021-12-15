@@ -1,5 +1,6 @@
 package com.campus.nicecampus.service.impl;
 
+import cn.hutool.core.util.HashUtil;
 import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.OSS;
 import com.campus.nicecampus.base.mapper.UserMapper;
@@ -57,10 +58,19 @@ public class UserServiceImpl extends BaseService implements UserService {
             user.setUsername(req.getUsername());
             user.setSignature(req.getSignature());
             user.setWechatId(req.getWeChatId());
-            ossService.upLoad(fileName, file.getInputStream(), file.getContentType());
-            String url = BASE_URL+fileName;
-            user.setIconUrl(url);
-            log.info("保存图片成功，图片uri为{}",url);
+            if(file.getSize() != 0){
+                long iconHashNew = HashUtil.cityHash64(file.getBytes());
+                long iconHashOld = user.getIconHash();
+                if(iconHashNew != iconHashOld){
+                    ossService.upLoad(fileName, file.getInputStream(), file.getContentType());
+                    String url = BASE_URL+fileName;
+                    user.setIconUrl(url);
+                    user.setIconHash(iconHashNew);
+                    log.info("保存图片成功，图片uri为{}",url);
+                }else {
+                    log.info("新图片与原图相同不做更新处理");
+                }
+            }
             userMapper.updateById(user);
         } catch (IOException e) {
             log.error("上传头像时发生异常...",e);
