@@ -1,8 +1,10 @@
 package com.campus.nicecampus.service.impl;
 
+import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.util.HashUtil;
 import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.OSS;
+import com.campus.nicecampus.base.exception.FileTypeIllegalException;
 import com.campus.nicecampus.base.mapper.UserMapper;
 import com.campus.nicecampus.base.model.User;
 import com.campus.nicecampus.req.SignUpReq;
@@ -16,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -28,6 +32,12 @@ public class UserServiceImpl extends BaseService implements UserService {
     OssService ossService;
     @Value("${aliyun.oss.baseUrl}")
     private String BASE_URL;
+    private static final Set<String> FILE_HEAD_SET = new HashSet<>();
+    static {
+        FILE_HEAD_SET.add("jpg");
+        FILE_HEAD_SET.add("jpeg");
+        FILE_HEAD_SET.add("png");
+    }
     @Override
     public User getById(long id) {
         User user = userMapper.selectById(id);
@@ -51,7 +61,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    public void updateUser(UpdateUserInfoReq req, MultipartFile file) {
+    public void updateUser(UpdateUserInfoReq req, MultipartFile file) throws FileTypeIllegalException{
         String fileName = UUID.randomUUID().toString();
         try {
             User user = userMapper.selectById(getUser().getId());
@@ -59,6 +69,9 @@ public class UserServiceImpl extends BaseService implements UserService {
             user.setSignature(req.getSignature());
             user.setWechatId(req.getWeChatId());
             if(file.getSize() != 0){
+                if(!FILE_HEAD_SET.contains(FileTypeUtil.getType(file.getInputStream()))){
+                    throw new FileTypeIllegalException();
+                }
                 long iconHashNew = HashUtil.cityHash64(file.getBytes());
                 long iconHashOld = user.getIconHash();
                 if(iconHashNew != iconHashOld){

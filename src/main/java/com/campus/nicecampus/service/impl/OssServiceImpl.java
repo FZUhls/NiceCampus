@@ -28,4 +28,9 @@ public class OssServiceImpl extends BaseService implements OssService {
         metadata.setContentType(contentType);
         return ossClient.putObject(bucketName, objectName, inputStream, metadata);
     }
+
+    @Override
+    public void delete() {
+        ossClient.deleteObject(bucketName,);
+    }
 }

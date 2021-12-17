@@ -2,6 +2,7 @@ package com.campus.nicecampus.controller;
 
 import cn.hutool.core.net.multipart.UploadFile;
 import cn.hutool.json.JSONUtil;
+import com.campus.nicecampus.base.exception.FileTypeIllegalException;
 import com.campus.nicecampus.base.model.User;
 import com.campus.nicecampus.req.SignUpReq;
 import com.campus.nicecampus.req.UpdateUserInfoReq;
@@ -49,7 +50,14 @@ public class UserController extends BaseController{
     @PostMapping("/user/updateUserInfo")
     @ResponseBody
     public BaseResponse updateUserInfo(UpdateUserInfoReq req, MultipartFile iconUrl){
-        userService.updateUser(req,iconUrl);
+        try {
+            userService.updateUser(req,iconUrl);
+        }catch (FileTypeIllegalException e){
+            log.error("更新用户信息时发生异常...",e);
+            BaseResponse fail = BaseResponse.fail();
+            fail.setMsg(e.getLocalizedMessage());
+            return fail;
+        }
         return BaseResponse.succ();
     }
 }

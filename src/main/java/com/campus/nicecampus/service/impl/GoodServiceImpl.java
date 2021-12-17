@@ -1,8 +1,10 @@
 package com.campus.nicecampus.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.campus.nicecampus.base.exception.AuthorityException;
 import com.campus.nicecampus.base.mapper.GoodsDetailMapper;
 import com.campus.nicecampus.base.model.GoodsDetail;
 import com.campus.nicecampus.req.AddGoodsReq;
@@ -14,7 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -60,5 +64,21 @@ public class GoodServiceImpl extends BaseService implements GoodService {
             queryWrapper.eq("type",type);
         }
         return goodsDetailMapper.selectPage(page,queryWrapper);
+    }
+
+    @Override
+    public List<GoodsDetail> getAllGoodsByUserId(long userId) {
+        return goodsDetailMapper.selectByMap(Map.of("user_id",userId));
+    }
+
+    @Override
+    public void deleteGoods(long goodsId) throws AuthorityException {
+        GoodsDetail goodsDetail = goodsDetailMapper.selectById(goodsId);
+        if(Objects.equals(getUser().getId(),goodsDetail.getUserId())){
+            ossService
+            goodsDetailMapper.deleteById(goodsId);
+        }else {
+            throw new AuthorityException("无权限删除此商品");
+        }
     }
 }

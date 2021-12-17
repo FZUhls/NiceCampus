@@ -8,4 +8,5 @@ import java.io.InputStream;
 
 public interface OssService {
     PutObjectResult upLoad(String objectName, InputStream inputStream, String contentType);
+    void delete();
 }
