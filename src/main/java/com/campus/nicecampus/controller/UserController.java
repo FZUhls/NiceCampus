@@ -45,7 +45,7 @@ public class UserController extends BaseController{
     @GetMapping("/user/userInfo")
     public String userInfo(Model model){
         model.addAttribute("user",getUser());
-        return "/userInfo";
+        return "userInfo";
     }
     @PostMapping("/user/updateUserInfo")
     @ResponseBody

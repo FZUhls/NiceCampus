@@ -1,8 +1,8 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/root/app/logs/nice-campus.log</file>
+        <file>/home/admin/app/logs/nice-campus.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/root/app/logs/nice-campus.%d{yyyy-MM-dd}.log</fileNamePattern>     <!-- 必要节点 -->
+            <fileNamePattern>/home/admin/app/logs/nice-campus.%d{yyyy-MM-dd}.log</fileNamePattern>     <!-- 必要节点 -->
             <maxHistory>30</maxHistory>      <!-- 可选节点 -->
         </rollingPolicy>
         <encoder>
