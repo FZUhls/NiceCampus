@@ -26,4 +26,5 @@ public interface GoodService {
      */
     List<GoodsDetail> getAllGoodsByUserId(long userId);
     void deleteGoods(long goodsId) throws AuthorityException;
+    GoodsDetail findById(long id);
 }

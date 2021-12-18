@@ -14,4 +14,5 @@ public class Comments {
     private Long userId;
     private String commentContent;
     private Integer score;
+    private Integer commentType;
 }

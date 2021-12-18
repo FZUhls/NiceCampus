@@ -11,5 +11,5 @@ import lombok.Data;
 public class Cart {
     private Long id;
     private Long userId;
-    private Integer goodsId;
+    private Long goodsId;
 }

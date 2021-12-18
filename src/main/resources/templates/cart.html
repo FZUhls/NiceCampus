@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二手-橘子校园</title>
+    <link rel="shortcut icon" href="/static/image/橘子.png" type="image/x-icon">
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootsnav.css">
+    <link rel="stylesheet" href="/static/css/snav.css">
+    <link rel="stylesheet" href="/static/css/shoppingCart.css">
+    <link rel="stylesheet" href="/static/css/myCart.css">
+    <link rel="stylesheet" href="/static/css/footer.css">
+    <link rel="stylesheet" href="/static/css/tipBox.css">
+    <style>
+        .common-footer p {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:include="head.html"></div>
+<div class="title">
+    <h2 style="color: coral;"><strong>我的购物车</strong></h2>
+    <button id="clearCart">清空购物车</button>
+</div>
+<div class="allGoods">
+    <ul>
+    </ul>
+</div>
+<div th:include="footer.html" style="margin-top: 200px;"></div>
+
+<script src="/static/js/jQuery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/bootsnav.js"></script>
+<script src="/static/js/alertTool.js"></script>
+<script>
+    $(function () {
+        $('.container nav').on('click', '.tipBox form a', function () {
+            $(this).parent().submit();
+        })
+        //请求该用户购物车中所有的商品条目
+        $.ajax({
+            url: '/cart/getCartRecord',
+            method: 'post',
+            dataType: 'json',
+            success: function (res) {
+                let cartItems = res.data;
+                cartItems.forEach((item) => {
+                    let cartObj = item;
+                    let goodsMenu = $('<li>' +
+                        '<img style="margin-left: 30px;">' +
+                        '<a href="javascript:;" id="goodsName">商品名称</a>' +
+                        '<form action="/good/detail" method="get">' +
+                        '<input type="text" name="id" style="display: none;"></form>' +
+                        '<label style="margin:0 250px;">价格</label>' +
+                        '<a href="javascript:;" style="margin-right: 50px;" id="del">删除</a></li>');
+                    goodsMenu.find('input').val(cartObj.goodsId);
+                    $.ajax({
+                        url: '/good/getOneGoods',
+                        method: 'post',
+                        data: {id: cartObj.goodsId},
+                        dataType: 'json',
+                        success: function (res) {
+                            let goods = res.data;
+                            goodsMenu.find('img').prop('src', goods.imgUrl);
+                            goodsMenu.find('#goodsName').text(goods.goodsName);
+                            goodsMenu.find('label').text("￥" + goods.price);
+                        }
+                    })
+                    $('.allGoods ul').prepend(goodsMenu);
+                })
+            }
+        })
+
+        $('#clearCart').click(function () {
+            if ($('.allGoods li').length >= 1) {
+                $.ajax({
+                    url: '/cart/delAll',
+                    type: 'post',
+                    success: function (res) {
+                        if (res.code == 1) {
+                            toastr.info("清空购物车成功")
+                        } else {
+                            toastr.error("情况购物车失败")
+                        }
+                    }
+                })
+            } else {
+                toastr.info("购物车为空")
+            }
+        })
+
+        //点击商品名称跳转到对应商品详情
+        $('.allGoods ul').on('click', 'li #goodsName', function () {
+            $(this).siblings('form').submit();
+        })
+
+        //删除指定的商品条目
+        $('.allGoods ul').on('click', 'li #del', function () {
+            let parent = $(this).parent();
+            $.ajax({
+                    url: '/cart/delOneCartRecord',
+                    method: 'post',
+                    dataType: 'json',
+                    data: {goodsId: $(this).parent().find('input').val()},
+                    success: function (res) {
+                        if (res.code == 1) {
+                            toastr.info("删除成功");
+                            parent.remove();
+                        } else {
+                            toastr.error("删除失败");
+                        }
+                    }
+                }
+            )
+        })
+    })
+</script>
+</body>
+
+</html>

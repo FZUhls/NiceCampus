@@ -18,58 +18,7 @@
 </head>
 
 <body>
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <nav class="navbar navbar-default navbar-mobile bootsnav on">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                </div>
-                <div class="collapse navbar-collapse" id="navbar-menu">
-                    <div class="icon">
-                        <img src="/static/image/橘子.png">
-                        <div>橘子校园</div>
-                    </div>
-                    <ul class="nav navbar-nav" data-in="fadeInDown" data-out="fadeOutUp">
-                        <li><a href="/">主页</a></li>
-                        <li><a href="/goodList">二手商品</a></li>
-                        <li style="background: #ebebeb;"><a href="#" style="color: orange;">求购</a></li>
-                        <li><a href="#">联系我们</a></li>
-                        <div class="shoppingCart">
-                            <a>购物车</a>
-                            <img src="/static/image/购物车空.png" style="width: 30px;height: 30px;margin: 0 10px;">
-                        </div>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">发布</a>
-                            <ul class="dropdown-menu animated">
-                                <li style="border-bottom: 1px solid gray;">
-                                    <div style="height: 40px;display: flex;align-items: center;">
-                                        <div class="release"><img src="/static/image/发布商品.png"></div>
-                                        <div><a href="/good/releaseGoods">发布商品</a></div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div style="height: 40px;display: flex;align-items: center;">
-                                        <div class="release"><img src="/static/image/发布求购.png"></div>
-                                        <div><a href="/good/seekGoods">发布求购</a></div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <div class="icon" style="margin:10px 0 0 15px;overflow: hidden;width: 200px;">
-                        <img th:src="${user.iconUrl}">
-                        <div id="login" style="text-align: left;">
-                            <a href="login.jsp" style="margin-left: 10px;">登录</a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-</div>
+<div th:include="head.html"></div>
 <div class="main">
     <div class="seekInfo">
         <div class="info1">
@@ -117,12 +66,13 @@
 <div class="pageBar">
     <ul class="pagination" id="pagination2"></ul>
 </div>
-<div th:include="footer.html"></div>
+<div th:include="footer.html" style="margin-top: 200px;"></div>
 
 <script src="/static/js/jQuery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/static/js/bootsnav.js"></script>
 <script src="/static/js/jqPaginator.js"></script>
+<script src="/static/js/alertTool.js"></script>
 <script th:inline="javascript">
     $(function () {
 
@@ -140,17 +90,7 @@
             });
         }
 
-        let tipBox = $('<div class="tipBox"><ul>' +
-            '<li style="border-bottom: 1px solid rgb(128,128,128);">' +
-            '<a href="/user/userInfo">个人中心</a></li>' +
-            '<li><form action="${pageContext.request.contextPath}/logOut" method="get"><a href="javascript:;">退出</a></form></li> </ul></div>');
-
         const user = /*[[${user}]]*/ null;
-        if(user != null){
-            $('#login a').text(user.username);
-            $('#login a').prop('href', 'javascript:;');
-            $('.container nav').append(tipBox);
-        }
 
         //点击购物车
         $('.container nav .shoppingCart a').click(function (){
@@ -164,30 +104,6 @@
         $('.container nav').on('click', '.tipBox form a', function () {
             $(this).parent().submit();
         })
-
-        let flag1 = 0, flag2 = 0;
-        $('#login').siblings('img').on({
-            mouseover: function () {
-                tipBox.css('display', 'block');
-                flag1 = 1;
-            },
-            mouseout: function () {
-                flag1 = 0
-            }
-        });
-        tipBox.on({
-            mouseover: function () {
-                flag2 = 1
-            },
-            mouseout: function () {
-                flag2 = 0
-            }
-        });
-        setInterval(function () {
-            if (!flag1 && !flag2) {
-                tipBox.css('display', 'none');
-            }
-        },1000);
 
         let currentPage = 1;
         //页面初始化获取第一页的求购记录

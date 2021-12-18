@@ -13,3 +13,5 @@ mybatis-plus:
   configuration:
     auto-mapping-behavior: partial #只对非嵌套的 resultMap 进行自动映射
     map-underscore-to-camel-case: true #开启自动驼峰命名规则映射
+logging:
+  config: classpath:logback-${spring.profiles.active}.xml

@@ -2,9 +2,12 @@
     width: 100%;
     background-color: #282c36;
     margin-top: 100px;
+    position: fixed;
+    bottom: 0;
+    z-index: 100;
 }
 .footerMain{
-    height: 200px;
+    height: 100px;
     margin: auto 200px;
 }
 .footerMain div{
@@ -14,6 +17,7 @@
     text-align: center;
 }
 .footerMain div p{
+    line-height: 25px;
     color: rgb(153,153,153);
 }
 .copyright{

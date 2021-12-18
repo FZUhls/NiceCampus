@@ -1,21 +1,18 @@
 package com.campus.nicecampus.controller;
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.campus.nicecampus.base.exception.AuthorityException;
+import com.campus.nicecampus.base.model.Comments;
 import com.campus.nicecampus.base.model.GoodsDetail;
 import com.campus.nicecampus.base.model.WantRecord;
 import com.campus.nicecampus.req.AddGoodsReq;
 import com.campus.nicecampus.req.WantRecordReq;
 import com.campus.nicecampus.res.BaseResponse;
+import com.campus.nicecampus.service.CommentService;
 import com.campus.nicecampus.service.GoodService;
 import com.campus.nicecampus.service.WantRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.naming.AuthenticationException;
-import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 @Slf4j
 @Controller
@@ -37,6 +30,8 @@ public class GoodsController extends BaseController{
     GoodService goodService;
     @Autowired
     WantRecordService wantRecordService;
+    @Autowired
+    CommentService commentService;
     @GetMapping("/goodList")
     public String goodList(Model model){
         model.addAttribute("user",getUser());
@@ -117,15 +112,31 @@ public class GoodsController extends BaseController{
         return succ;
     }
     @ResponseBody
+    @PostMapping("/good/getOneGoods")
+    public BaseResponse<GoodsDetail> getOneGoods(long id){
+        GoodsDetail goodsDetail = goodService.findById(id);
+        BaseResponse<GoodsDetail> res = BaseResponse.succ();
+        res.setData(goodsDetail);
+        return res;
+    }
+    @ResponseBody
+    @PostMapping("/good/getComment")
+    public BaseResponse<List<Comments>> getComments(long goodsId,int commentType){
+        List<Comments> comments = commentService.getByGoodsIdAndType(goodsId,commentType);
+        BaseResponse<List<Comments>> response = BaseResponse.succ();
+        response.setData(comments);
+        return response;
+    }
+    @ResponseBody
     @PostMapping("/good/offShelf")
     public BaseResponse offShelf(long goodsId){
         try {
             goodService.deleteGoods(goodsId);
             return BaseResponse.succ();
-        } catch (AuthorityException e) {
+        } catch (Exception e) {
             log.error("删除商品发生异常...",e);
             BaseResponse fail = BaseResponse.fail();
-            fail.setMsg(e.getLocalizedMessage());
+            fail.setMsg("删除商品发生异常");
             return fail;
         }
     }
@@ -141,6 +152,12 @@ public class GoodsController extends BaseController{
             fail.setMsg(e.getLocalizedMessage());
             return fail;
         }
+    }
+    @ResponseBody
+    @PostMapping("/comment/addComment")
+    public BaseResponse addComment(long goodsId, String commentContent, int score){
+        commentService.addComment(goodsId,commentContent,score);
+        return BaseResponse.succ();
     }
 
 }

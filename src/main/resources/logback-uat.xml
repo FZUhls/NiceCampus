@@ -1,0 +1,20 @@
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/root/app/logs/nice-campus.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/root/app/logs/nice-campus.%d{yyyy-MM-dd}.log</fileNamePattern>     <!-- 必要节点 -->
+            <maxHistory>30</maxHistory>      <!-- 可选节点 -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>{"date" : "%d{yyyy-MM-dd HH:mm:ss.SSS}", "thread" : "%thread", "LOG_LEVEL" : "%-5level", "logger" : "%logger", "msg" : "%msg"}%n</pattern>
+            <charset>UTF-8</charset>　　　
+        </encoder>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!-- 文件大小触发重写新文件 -->
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <root level="INFO">　　　
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

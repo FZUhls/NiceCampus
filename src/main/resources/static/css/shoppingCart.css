@@ -1,6 +1,5 @@
 .shoppingCart {
     float: left;
-    width: 260px;
     height: 78px;
     display: flex;
     flex-direction: row-reverse;

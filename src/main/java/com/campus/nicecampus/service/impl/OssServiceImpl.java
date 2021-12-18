@@ -22,6 +22,8 @@ public class OssServiceImpl extends BaseService implements OssService {
     private OSS ossClient;
     @Value("${aliyun.oss.bucketName}")
     private String bucketName;
+    @Value("${aliyun.oss.baseUrl}")
+    private String BASE_URL;
     @Override
     public PutObjectResult upLoad(String objectName, InputStream inputStream, String contentType){
         ObjectMetadata metadata = new ObjectMetadata();
@@ -30,7 +32,8 @@ public class OssServiceImpl extends BaseService implements OssService {
     }
 
     @Override
-    public void delete() {
-        ossClient.deleteObject(bucketName,);
+    public void delete(String imgUrl) {
+        String imgName = imgUrl.replace(BASE_URL, "");
+        ossClient.deleteObject(bucketName,imgName);
     }
 }

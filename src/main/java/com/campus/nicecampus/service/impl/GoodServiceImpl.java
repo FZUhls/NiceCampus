@@ -8,12 +8,14 @@ import com.campus.nicecampus.base.exception.AuthorityException;
 import com.campus.nicecampus.base.mapper.GoodsDetailMapper;
 import com.campus.nicecampus.base.model.GoodsDetail;
 import com.campus.nicecampus.req.AddGoodsReq;
+import com.campus.nicecampus.service.CartService;
 import com.campus.nicecampus.service.GoodService;
 import com.campus.nicecampus.service.OssService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.AuthenticationException;
@@ -27,6 +29,8 @@ import java.util.UUID;
 public class GoodServiceImpl extends BaseService implements GoodService {
     @Autowired
     GoodsDetailMapper goodsDetailMapper;
+    @Autowired
+    CartService cartService;
     @Autowired
     OssService ossService;
     @Value("${aliyun.oss.baseUrl}")
@@ -72,13 +76,24 @@ public class GoodServiceImpl extends BaseService implements GoodService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteGoods(long goodsId) throws AuthorityException {
         GoodsDetail goodsDetail = goodsDetailMapper.selectById(goodsId);
-        if(Objects.equals(getUser().getId(),goodsDetail.getUserId())){
-            ossService
-            goodsDetailMapper.deleteById(goodsId);
-        }else {
-            throw new AuthorityException("无权限删除此商品");
+        try {
+            if(Objects.equals(getUser().getId(),goodsDetail.getUserId())){
+                cartService.deleteOneCart(goodsId);
+                goodsDetailMapper.deleteById(goodsId);
+                ossService.delete(goodsDetail.getImgUrl());
+            }else {
+                throw new AuthorityException("无权限删除此商品");
+            }
+        }catch (Exception e){
+            throw e;
         }
+    }
+
+    @Override
+    public GoodsDetail findById(long id) {
+        return goodsDetailMapper.selectById(id);
     }
 }

@@ -1,0 +1,11 @@
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>　　　　　　　　
+            <pattern>{"date" : "%d{yyyy-MM-dd HH:mm:ss.SSS}", "thread" : "%thread", "LOG_LEVEL" : "%-5level", "logger" : "%logger", "msg" : "%msg"}%n</pattern>
+            <charset>UTF-8</charset>　　　
+        </encoder>
+    </appender>
+    <root level="INFO">　　　
+        <appender-ref ref="STDOUT"/>　
+    </root>
+</configuration>

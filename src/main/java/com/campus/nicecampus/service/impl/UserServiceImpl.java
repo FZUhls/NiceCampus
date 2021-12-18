@@ -75,8 +75,11 @@ public class UserServiceImpl extends BaseService implements UserService {
                 long iconHashNew = HashUtil.cityHash64(file.getBytes());
                 long iconHashOld = user.getIconHash();
                 if(iconHashNew != iconHashOld){
+                    //上传新的头像图片
                     ossService.upLoad(fileName, file.getInputStream(), file.getContentType());
-                    String url = BASE_URL+fileName;
+                    String url = BASE_URL + fileName;
+                    //删除旧的头像图片
+                    ossService.delete(user.getIconUrl());
                     user.setIconUrl(url);
                     user.setIconHash(iconHashNew);
                     log.info("保存图片成功，图片uri为{}",url);
